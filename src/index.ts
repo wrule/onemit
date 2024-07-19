@@ -24,6 +24,7 @@ class Onemit {
     return new Promise<any>((resolve, reject) => {
       const uid = nanoid();
       this.send({ uid, onemit_type: 'request', data });
+      this.requestMap.set(uid, { resolve, reject });
       const realTimeout = timeout ?? this.timeout;
       if (realTimeout != null) {
         setTimeout(() => {
@@ -31,7 +32,6 @@ class Onemit {
           this.requestMap.delete(uid);
         }, realTimeout);
       }
-      this.requestMap.set(uid, { resolve, reject });
     });
   }
 
