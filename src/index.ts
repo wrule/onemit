@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { Worker } from 'worker_threads';
 
 export
 interface OnemitData {
@@ -55,5 +56,7 @@ class Onemit {
 
 export
 function hello() {
-  console.log('hello world!');
+  const worker = new Worker('./dist/worker.js');
+  const om = new Onemit((data) => worker.postMessage(data), (data) => data + '!');
+  worker.on('message', (data) => om.receive(data));
 }
