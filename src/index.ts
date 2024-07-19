@@ -12,7 +12,7 @@ class Onemit {
   public constructor(
     private readonly send: (data: OnemitData) => void,
     private readonly handleRequest?: (data: any) => any,
-    private readonly timeout?: number,
+    private readonly timeout = 60 * 1000,
   ) { }
 
   private requestMap = new Map<string, {
