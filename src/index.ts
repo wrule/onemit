@@ -4,7 +4,8 @@ import { Worker } from 'worker_threads';
 export
 interface OnemitData {
   uid: string;
-  onemit_type: 'request' | 'response';
+  onemitType: 'request' | 'response';
+  url: string;
   data: any;
 }
 
@@ -12,7 +13,7 @@ export
 class Onemit {
   public constructor(
     private readonly send: (data: OnemitData) => void,
-    private readonly handleRequest?: (data: any) => any,
+    private readonly handleRequest?: (url: string, data: any) => any,
     private readonly timeout = 60 * 1000,
   ) { }
 
@@ -21,10 +22,10 @@ class Onemit {
     reject: (reason?: any) => void,
   }>();
 
-  public request(data: any, timeout?: number) {
+  public request(url: string, data: any, timeout?: number) {
     return new Promise<any>((resolve, reject) => {
       const uid = nanoid();
-      this.send({ uid, onemit_type: 'request', data });
+      this.send({ uid, onemitType: 'request', url, data });
       this.requestMap.set(uid, { resolve, reject });
       const realTimeout = timeout ?? this.timeout;
       if (realTimeout != null) {
@@ -42,7 +43,8 @@ class Onemit {
         this.send({
           uid: onemitData.uid,
           onemit_type: 'response',
-          data: this.handleRequest(onemitData.data),
+          url: onemitData.url,
+          data: this.handleRequest(onemitData.url, onemitData.data),
         });
       }
       if (onemitData.onemit_type === 'response') {
