@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
 import { Worker } from 'worker_threads';
 
@@ -72,7 +73,24 @@ class OnemitPostMessage extends Onemit {
 }
 
 export
+class OnemitEmit extends Onemit {
+  public constructor(
+    port: {
+      emit: (...args: any[]) => any,
+      on: (...args: any[]) => any,
+    },
+    handleRequest?: (url: string, data: any) => any,
+    timeout = 60 * 1000,
+  ) {
+    super((data) => port.emit('onemit', data), handleRequest, timeout);
+    port.on('onemit', (data: any) => this.receive(data));
+  }
+}
+
+
+export
 function hello() {
   const worker = new Worker('./dist/worker.js');
   const om1 = new OnemitPostMessage(worker);
+  const a = new EventEmitter();
 }
