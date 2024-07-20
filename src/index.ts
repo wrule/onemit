@@ -38,14 +38,14 @@ class Onemit {
     });
   }
 
-  protected receive(onemitData: OnemitData) {
+  protected async receive(onemitData: OnemitData) {
     if (onemitData.uid) {
       if (onemitData.onemitType === 'request' && this.handleRequest) {
         this.send({
           uid: onemitData.uid,
           onemitType: 'response',
           url: onemitData.url,
-          data: this.handleRequest(onemitData.url, onemitData.data),
+          data: await this.handleRequest(onemitData.url, onemitData.data),
         });
       }
       if (onemitData.onemitType === 'response') {
