@@ -1,6 +1,4 @@
-import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
-import { Worker } from 'worker_threads';
 
 export
 interface OnemitData {
@@ -89,12 +87,7 @@ class OnemitEmit extends Onemit {
   }
 }
 
-
 export
 async function hello() {
-  const event = new EventEmitter();
-  const om1 = new OnemitEmit(event, (url, data) => {
-    return data + 'om1';
-  });
-  console.log(await om1.request('', 'nihao'));
+
 }
