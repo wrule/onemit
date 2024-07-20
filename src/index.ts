@@ -37,7 +37,7 @@ class Onemit {
     });
   }
 
-  public receive(onemitData: OnemitData) {
+  protected receive(onemitData: OnemitData) {
     if (onemitData.uid) {
       if (onemitData.onemitType === 'request' && this.handleRequest) {
         this.send({
@@ -57,8 +57,22 @@ class Onemit {
 }
 
 export
+class OnemitPostMessage extends Onemit {
+  public constructor(
+    port: {
+      postMessage: (...args: any[]) => any,
+      on: (...args: any[]) => any,
+    },
+    handleRequest?: (url: string, data: any) => any,
+    timeout = 60 * 1000,
+  ) {
+    super((data) => port.postMessage(data), handleRequest, timeout);
+    port.on('message', (data: any) => this.receive(data));
+  }
+}
+
+export
 function hello() {
   const worker = new Worker('./dist/worker.js');
-  const om = new Onemit((data) => worker.postMessage(data), (data) => data + '!');
-  worker.on('message', (data) => om.receive(data));
+  const om1 = new OnemitPostMessage(worker);
 }
