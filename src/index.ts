@@ -39,15 +39,15 @@ class Onemit {
 
   public receive(onemitData: OnemitData) {
     if (onemitData.uid) {
-      if (onemitData.onemit_type === 'request' && this.handleRequest) {
+      if (onemitData.onemitType === 'request' && this.handleRequest) {
         this.send({
           uid: onemitData.uid,
-          onemit_type: 'response',
+          onemitType: 'response',
           url: onemitData.url,
           data: this.handleRequest(onemitData.url, onemitData.data),
         });
       }
-      if (onemitData.onemit_type === 'response') {
+      if (onemitData.onemitType === 'response') {
         const request = this.requestMap.get(onemitData.uid);
         request?.resolve(onemitData.data);
         this.requestMap.delete(onemitData.uid);
