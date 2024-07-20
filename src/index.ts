@@ -49,9 +49,11 @@ class Onemit {
         });
       }
       if (onemitData.onemitType === 'response') {
-        const request = this.requestMap.get(onemitData.uid);
-        request?.resolve(onemitData.data);
-        this.requestMap.delete(onemitData.uid);
+        setTimeout(() => {
+          const request = this.requestMap.get(onemitData.uid);
+          request?.resolve(onemitData.data);
+          this.requestMap.delete(onemitData.uid);
+        }, 0);
       }
     }
   }
@@ -89,8 +91,10 @@ class OnemitEmit extends Onemit {
 
 
 export
-function hello() {
-  const worker = new Worker('./dist/worker.js');
-  const om1 = new OnemitPostMessage(worker);
-  const a = new EventEmitter();
+async function hello() {
+  const event = new EventEmitter();
+  const om1 = new OnemitEmit(event, (url, data) => {
+    return data + 'om1';
+  });
+  console.log(await om1.request('', 'nihao'));
 }
